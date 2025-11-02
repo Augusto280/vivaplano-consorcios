@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VivaPlano Consórcios — Planeje hoje, conquiste sempre</title>
+  <meta name="description" content="VivaPlano Consórcios: consórcio de imóveis, veículos e serviços com taxas competitivas, atendimento consultivo e aprovação simples. Solicite sua simulação agora." />
+  <meta property="og:title" content="VivaPlano Consórcios" />
+  <meta property="og:description" content="Consórcios sob medida para você: imóvel, carro, moto e serviços. Fale com um especialista." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://example.com" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <!-- Favicon (SVG Data URI) -->
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="%230ea5e9"/><stop offset="1" stop-color="%23636bff"/></linearGradient></defs><rect width="64" height="64" rx="12" fill="url(%23g)"/><path d="M18 40c8 0 10-8 14-8s6 8 14 8" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="32" cy="24" r="6" fill="white"/></svg>' />
+  <!-- Tailwind CSS CDN (standalone) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand:#0ea5e9; --brand-dark:#0284c7; }
+    .glass { backdrop-filter: blur(10px); background: rgba(255,255,255,0.08); }
+    .shadow-soft { box-shadow: 0 10px 30px rgba(2,132,199,.15); }
+    html { scroll-behavior: smooth; }
+    .floating { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 60; }
+    .input { @apply w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:ring-4 focus:ring-sky-100; }
+    .tag { @apply inline-flex items-center rounded-full border px-3 py-1 text-sm; }
+  </style>
+  <script>
+    // Configurações
+    const COMPANY_NAME = 'VivaPlano Consórcios';
+    const WHATS_NUMBER = '5531972265373'; // Número do WhatsApp em formato internacional (sem +)
+
+    // Util
+    function encodeWhatsMessage(text){
+      return encodeURIComponent(text);
+    }
+
+    // Modal
+    function toggleModal(show){
+      const m = document.getElementById('leadModal');
+      const b = document.getElementById('backdrop');
+      if(show){ m.classList.remove('hidden'); b.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); }
+      else { m.classList.add('hidden'); b.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); }
+    }
+
+    // Multi-step form logic
+    let step = 1;
+    function go(n){
+      step = Math.max(1, Math.min(3, step + n));
+      updateSteps();
+    }
+    function gotoStep(n){ step = n; updateSteps(); }
+    function updateSteps(){
+      for(const s of document.querySelectorAll('[data-step]')){
+        s.classList.toggle('hidden', parseInt(s.dataset.step) !== step);
+      }
+      // progresso
+      document.querySelectorAll('[data-dot]').forEach((el, i)=>{
+        const idx = i+1; el.classList.toggle('bg-sky-600', idx<=step); el.classList.toggle('bg-slate-200', idx>step);
+      });
+    }
+
+    function submitForm(e){
+      e.preventDefault();
+      const form = document.getElementById('leadForm');
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // Validações simples
+      const required = ['nome','telefone','objetivo','parcela','lgbd'];
+      for(const r of required){
+        if(!data[r] || (r==='lgbd' && data[r] !== 'on')){
+          alert('Por favor, preencha os campos obrigatórios e aceite a política de privacidade.');
+          return;
+        }
+      }
+
+      const msg = `Olá! Quero uma simulação de consórcio.\n\n`+
+        `Nome: ${data.nome}\n`+
+        `Telefone: ${data.telefone}\n`+
+        `Objetivo: ${data.objetivo}\n`+
+        `Parcela desejada: R$ ${data.parcela}\n`+
+        `Prazo: ${data.prazo || 'A definir'} meses\n`+
+        `Renda aproximada: R$ ${data.renda || 'Não informado'}\n`+
+        `Observações: ${data.obs || '-'}\n`+
+        `Origem: Site ${COMPANY_NAME}`;
+
+      const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeWhatsMessage(msg)}`;
+      window.location.href = url;
+    }
+
+    window.addEventListener('DOMContentLoaded', ()=>{
+      updateSteps();
+      // intercepta todos botões de whatsapp
+      document.querySelectorAll('[data-open-whats]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.preventDefault();
+          toggleModal(true);
+          gotoStep(1);
+        });
+      });
+      document.getElementById('backdrop').addEventListener('click', ()=>toggleModal(false));
+    });
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <!-- Backdrop -->
+  <div id="backdrop" class="hidden fixed inset-0 bg-slate-900/50 z-40"></div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 backdrop-blur border-b border-white/20 bg-white/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group">
+        <!-- Modern SVG Logo -->
+        <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="rounded-xl shadow-soft">
+          <defs>
+            <linearGradient id="g2" x1="0" x2="1" y1="0" y2="1">
+              <stop stop-color="#0ea5e9"/>
+              <stop offset="1" stop-color="#6366f1"/>
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="14" fill="url(#g2)"/>
+          <path d="M18 42c8 0 10-10 14-10s6 10 14 10" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <circle cx="32" cy="22" r="7" fill="white"/>
+        </svg>
+        <div>
+          <div class="text-xl font-black tracking-tight">VivaPlano</div>
+          <div class="text-xs uppercase tracking-widest text-slate-500">Consórcios</div>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#beneficios" class="hover:text-sky-700">Benefícios</a>
+        <a href="#como-funciona" class="hover:text-sky-700">Como funciona</a>
+        <a href="#planos" class="hover:text-sky-700">Planos</a>
+        <a href="#depoimentos" class="hover:text-sky-700">Depoimentos</a>
+        <a href="#faq" class="hover:text-sky-700">Dúvidas</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a data-open-whats href="#simular" class="hidden sm:inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-xl shadow-soft">
+          <span>Simular agora</span>
+        </a>
+        <button class="md:hidden p-2 rounded-lg hover:bg-slate-100" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+          <span class="sr-only">Abrir menu</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t bg-white/90">
+      <div class="px-4 py-3 flex flex-col gap-2 text-sm">
+        <a href="#beneficios" class="py-2">Benefícios</a>
+        <a href="#como-funciona" class="py-2">Como funciona</a>
+        <a href="#planos" class="py-2">Planos</a>
+        <a href="#depoimentos" class="py-2">Depoimentos</a>
+        <a href="#faq" class="py-2">Dúvidas</a>
+        <a data-open-whats href="#simular" class="mt-2 inline-flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-xl">Simular agora</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-indigo-50"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 relative">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <span class="tag border-sky-200 text-sky-700 bg-sky-50">Sem juros — apenas taxa de administração</span>
+          <h1 class="mt-4 text-4xl sm:text-5xl font-black leading-tight">Consórcio inteligente para <span class="text-sky-600">imóveis</span>, <span class="text-sky-600">veículos</span> e <span class="text-sky-600">serviços</span>.</h1>
+          <p class="mt-4 text-lg text-slate-600">Planeje sua conquista com parcelas que cabem no bolso e atendimento consultivo. Simule agora e receba sua proposta personalizada no WhatsApp.</p>
+          <div class="mt-6 flex gap-3">
+            <a data-open-whats href="#simular" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-xl shadow-soft">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 7H7v6h6V7z"/><path d="M5 3a2 2 0 00-2 2v14l4-4h10a2 2 0 002-2V5a2 2 0 00-2-2H5z"/></svg>
+              <span>Quero simular</span>
+            </a>
+            <a href="#planos" class="inline-flex items-center gap-2 border border-slate-200 hover:border-slate-300 px-5 py-3 rounded-xl">Ver planos</a>
+          </div>
+          <div class="mt-6 flex items-center gap-6 text-sm text-slate-600">
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Aprovação simples</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-500"></span> Sem entrada obrigatória</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-500"></span> Atendimento humano</div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="rounded-3xl overflow-hidden border border-slate-200 shadow-soft">
+            <div class="bg-white p-6">
+              <div class="text-sm text-slate-500 mb-2">Simulação rápida</div>
+              <form onsubmit="submitForm(event)" id="leadFormQuick" class="grid sm:grid-cols-2 gap-3">
+                <input name="nome" type="text" placeholder="Seu nome" class="input" required />
+                <input name="telefone" type="tel" placeholder="WhatsApp (DDD + número)" class="input" required />
+                <select name="objetivo" class="input" required>
+                  <option value="">Objetivo</option>
+                  <option>Imóvel</option>
+                  <option>Carro</option>
+                  <option>Moto</option>
+                  <option>Serviços</option>
+                </select>
+                <select name="parcela" class="input" required>
+                  <option value="">Parcela desejada</option>
+                  <option>300</option>
+                  <option>500</option>
+                  <option>800</option>
+                  <option>1000</option>
+                  <option>1500</option>
+                  <option>2000</option>
+                </select>
+                <button type="submit" class="sm:col-span-2 mt-2 inline-flex items-center justify-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-xl">Receber proposta no WhatsApp</button>
+              </form>
+              <p class="text-xs text-slate-400 mt-3">Ao enviar, você concorda com nossa <a href="#privacidade" class="underline">Política de Privacidade</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefícios -->
+  <section id="beneficios" class="py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white border border-slate-200 rounded-2xl">
+          <h3 class="font-bold text-lg">Taxas competitivas</h3>
+          <p class="mt-2 text-slate-600">Economia real no longo prazo: sem juros, apenas taxa de administração transparente.</p>
+        </div>
+        <div class="p-6 bg-white border border-slate-200 rounded-2xl">
+          <h3 class="font-bold text-lg">Flexibilidade</h3>
+          <p class="mt-2 text-slate-600">Planos com prazos e parcelas ajustadas ao seu momento de vida.</p>
+        </div>
+        <div class="p-6 bg-white border border-slate-200 rounded-2xl">
+          <h3 class="font-bold text-lg">Amparo regulatório</h3>
+          <p class="mt-2 text-slate-600">Operação em conformidade com a legislação brasileira e boas práticas do setor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Como funciona -->
+  <section id="como-funciona" class="py-14 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-black">Como funciona</h2>
+      <div class="mt-8 grid md:grid-cols-4 gap-6">
+        <div class="p-6 border border-slate-200 rounded-2xl">
+          <div class="text-sky-600 font-bold">1. Escolha</div>
+          <p class="text-slate-600 mt-2">Defina objetivo, prazo e parcela que cabem no seu orçamento.</p>
+        </div>
+        <div class="p-6 border border-slate-200 rounded-2xl">
+          <div class="text-sky-600 font-bold">2. Contribua</div>
+          <p class="text-slate-600 mt-2">Pague mensalmente e forme seu crédito de forma planejada.</p>
+        </div>
+        <div class="p-6 border border-slate-200 rounded-2xl">
+          <div class="text-sky-600 font-bold">3. Contemplação</div>
+          <p class="text-slate-600 mt-2">Via sorteio ou lance, você adianta sua conquista.</p>
+        </div>
+        <div class="p-6 border border-slate-200 rounded-2xl">
+          <div class="text-sky-600 font-bold">4. Conquista</div>
+          <p class="text-slate-600 mt-2">Utilize o crédito para comprar o bem/serviço dos seus sonhos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Planos -->
+  <section id="planos" class="py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-black">Planos populares</h2>
+      <div class="mt-8 grid md:grid-cols-3 gap-6">
+        <!-- Card -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="text-sm text-slate-500">Veículos</div>
+          <h3 class="text-xl font-bold">Plano Mobilidade</h3>
+          <p class="mt-2 text-slate-600">Carros e motos com prazos flexíveis.</p>
+          <div class="mt-4 text-3xl font-black">R$ 500<span class="text-base font-medium text-slate-500">/mês</span></div>
+          <ul class="mt-4 space-y-2 text-sm text-slate-600">
+            <li>✔ Crédito ajustável</li>
+            <li>✔ Lances livres e fixos</li>
+            <li>✔ Sem entrada obrigatória</li>
+          </ul>
+          <a data-open-whats href="#" class="mt-6 inline-flex items-center justify-center gap-2 w-full bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-xl">Quero este plano</a>
+        </div>
+        <div class="rounded-2xl border-2 border-sky-200 bg-white p-6 shadow-soft relative">
+          <span class="absolute -top-3 right-4 text-xs bg-sky-600 text-white px-2 py-1 rounded-full">Mais escolhido</span>
+          <div class="text-sm text-slate-500">Imóveis</div>
+          <h3 class="text-xl font-bold">Plano Morar Bem</h3>
+          <p class="mt-2 text-slate-600">Imóveis residenciais com condições especiais.</p>
+          <div class="mt-4 text-3xl font-black">R$ 1.000<span class="text-base font-medium text-slate-500">/mês</span></div>
+          <ul class="mt-4 space-y-2 text-sm text-slate-600">
+            <li>✔ Contemplação por sorteio ou lance</li>
+            <li>✔ Possibilidade de uso do FGTS*</li>
+            <li>✔ Consultoria especializada</li>
+          </ul>
+          <a data-open-whats href="#" class="mt-6 inline-flex items-center justify-center gap-2 w-full bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-xl">Quero este plano</a>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="text-sm text-slate-500">Serviços</div>
+          <h3 class="text-xl font-bold">Plano Projetos</h3>
+          <p class="mt-2 text-slate-600">Serviços diversos: reformas, cirurgias, educação e mais.</p>
+          <div class="mt-4 text-3xl font-black">R$ 300<span class="text-base font-medium text-slate-500">/mês</span></div>
+          <ul class="mt-4 space-y-2 text-sm text-slate-600">
+            <li>✔ Parcelas acessíveis</li>
+            <li>✔ Uso flexível do crédito</li>
+            <li>✔ Acompanhamento completo</li>
+          </ul>
+          <a data-open-whats href="#" class="mt-6 inline-flex items-center justify-center gap-2 w-full bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 rounded-xl">Quero este plano</a>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 mt-2">*Sujeito às regras vigentes.</p>
+    </div>
+  </section>
+
+  <!-- Depoimentos -->
+  <section id="depoimentos" class="py-14 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-black">Clientes que já planejam com a gente</h2>
+      <div class="mt-8 grid md:grid-cols-3 gap-6">
+        <!-- Testimonial Card -->
+        <figure class="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center font-bold text-sky-600">AP</div>
+            <figcaption>
+              <div class="font-semibold">Ana Paula</div>
+              <div class="text-xs text-slate-500">Imóvel contemplado</div>
+            </figcaption>
+          </div>
+          <blockquote class="mt-3 text-slate-700">“Atendimento humano e transparente. Fui contemplada por lance no 8º mês. Recomendo!”</blockquote>
+        </figure>
+        <figure class="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-600">RC</div>
+            <figcaption>
+              <div class="font-semibold">Rafael Costa</div>
+              <div class="text-xs text-slate-500">Veículo conquistado</div>
+            </figcaption>
+          </div>
+          <blockquote class="mt-3 text-slate-700">“Parcela coube no bolso e fechei sem burocracia. Em poucos meses já estava de carro novo.”</blockquote>
+        </figure>
+        <figure class="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-emerald-600">MS</div>
+            <figcaption>
+              <div class="font-semibold">Maria Souza</div>
+              <div class="text-xs text-slate-500">Serviço financiado</div>
+            </figcaption>
+          </div>
+          <blockquote class="mt-3 text-slate-700">“Usei para uma reforma. Processo simples, com acompanhamento do início ao fim.”</blockquote>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-14">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-black">Dúvidas frequentes</h2>
+      <div class="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white">
+        <details class="p-6 group" open>
+          <summary class="cursor-pointer font-semibold flex items-center justify-between">O consórcio tem juros?
+            <span class="ml-4 text-slate-400 group-open:rotate-180 transition-transform">⌄</span></summary>
+          <p class="mt-3 text-slate-600">Não. Existe taxa de administração e, quando aplicável, fundo de reserva e seguros, conforme regulamento do grupo.</p>
+        </details>
+        <details class="p-6 group">
+          <summary class="cursor-pointer font-semibold flex items-center justify-between">O que é contemplação?
+            <span class="ml-4 text-slate-400 group-open:rotate-180 transition-transform">⌄</span></summary>
+          <p class="mt-3 text-slate-600">É quando você tem direito ao crédito: ocorre por sorteio mensal ou por lance ofertado.</p>
+        </details>
+        <details class="p-6 group">
+          <summary class="cursor-pointer font-semibold flex items-center justify-between">Posso usar FGTS?
+            <span class="ml-4 text-slate-400 group-open:rotate-180 transition-transform">⌄</span></summary>
+          <p class="mt-3 text-slate-600">Para consórcio de imóveis, de acordo com regras vigentes, o FGTS pode ser utilizado em situações específicas.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 bg-gradient-to-tr from-sky-600 to-indigo-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 items-center">
+      <div>
+        <h2 class="text-3xl font-black">Pronto para dar o próximo passo?</h2>
+        <p class="mt-3 text-sky-100">Responda 3 perguntas rápidas e receba sua simulação personalizada agora mesmo no WhatsApp.</p>
+      </div>
+      <div class="flex lg:justify-end">
+        <a data-open-whats href="#simular" class="inline-flex items-center gap-2 bg-white text-sky-700 hover:bg-slate-100 px-5 py-3 rounded-xl font-semibold">Começar minha simulação</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 bg-white border-t">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-slate-600">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="font-bold">VivaPlano Consórcios</div>
+          <div>CNPJ 00.000.000/0001-00 • Belo Horizonte/MG</div>
+        </div>
+        <div class="flex gap-4">
+          <a href="#privacidade" class="hover:text-sky-700">Política de Privacidade</a>
+          <a data-open-whats href="#" class="hover:text-sky-700">Fale conosco</a>
+        </div>
+      </div>
+      <p class="mt-4 text-xs text-slate-400">© <span id="year"></span> VivaPlano Consórcios. Todos os direitos reservados.</p>
+    </div>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  </footer>
+
+  <!-- Floating WhatsApp Button (abre formulário) -->
+  <div class="floating">
+    <a data-open-whats href="#" class="group inline-flex items-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-3 rounded-full shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-5 h-5 fill-white"><path d="M380.9 97.1C339-45.2 169.6-30.3 88.5 50.9c-62.7 62.7-72.3 158.1-29.4 232.4L32 480l200.5-26.7c70.5 38.4 158.6 20.5 213.1-33.9 81.4-81.4 59.4-222.8-64.7-322.3zM224 438.7c-36.8 0-70.8-10.3-99.8-28l-59.2 7.9 7.9-57.9c-18.4-30-28.9-64.8-28.9-102.2C44 153 125 72 224 72c98.1 0 180 81.9 180 180s-81.9 186.7-180 186.7z"/></svg>
+      <span class="hidden sm:inline">Falar no WhatsApp</span>
+    </a>
+  </div>
+
+  <!-- MODAL: Questionário antes do WhatsApp -->
+  <div id="leadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b bg-slate-50 flex items-center justify-between">
+        <h3 class="font-bold">Vamos personalizar sua simulação</h3>
+        <button class="p-2 hover:bg-slate-100 rounded-lg" onclick="toggleModal(false)">✕</button>
+      </div>
+      <form id="leadForm" onsubmit="submitForm(event)" class="p-6">
+        <!-- Progresso -->
+        <div class="flex items-center gap-2 mb-6">
+          <div data-dot class="w-2.5 h-2.5 rounded-full bg-sky-600"></div>
+          <div class="flex-1 h-px bg-slate-200"></div>
+          <div data-dot class="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
+          <div class="flex-1 h-px bg-slate-200"></div>
+          <div data-dot class="w-2.5 h-2.5 rounded-full bg-slate-200"></div>
+        </div>
+
+        <!-- Etapa 1 -->
+        <div data-step="1" class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-medium">Seu nome *</label>
+            <input name="nome" type="text" class="input mt-1" required />
+          </div>
+          <div>
+            <label class="text-sm font-medium">WhatsApp (DDD + número) *</label>
+            <input name="telefone" type="tel" class="input mt-1" required />
+          </div>
+          <div>
+            <label class="text-sm font-medium">Objetivo *</label>
+            <select name="objetivo" class="input mt-1" required>
+              <option value="">Selecione</option>
+              <option>Imóvel</option>
+              <option>Carro</option>
+              <option>Moto</option>
+              <option>Serviços</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium">Parcela desejada (R$) *</label>
+            <input name="parcela" type="number" min="100" step="50" class="input mt-1" required />
+          </div>
+        </div>
+
+        <!-- Etapa 2 -->
+        <div data-step="2" class="grid md:grid-cols-3 gap-4 hidden">
+          <div>
+            <label class="text-sm font-medium">Prazo (meses)</label>
+            <input name="prazo" type="number" min="12" step="12" class="input mt-1" />
+          </div>
+          <div>
+            <label class="text-sm font-medium">Renda mensal (R$)</label>
+            <input name="renda" type="number" min="0" step="100" class="input mt-1" />
+          </div>
+          <div>
+            <label class="text-sm font-medium">Observações</label>
+            <input name="obs" type="text" placeholder="Ex.: usar FGTS, entrada, etc." class="input mt-1" />
+          </div>
+        </div>
+
+        <!-- Etapa 3 -->
+        <div data-step="3" class="hidden">
+          <div class="p-4 border border-slate-200 rounded-xl bg-slate-50 text-sm text-slate-600">
+            Revise seus dados e clique em "Enviar" para abrir o WhatsApp com sua solicitação de simulação.
+          </div>
+          <label class="mt-4 inline-flex items-center gap-2 text-sm"><input type="checkbox" name="lgbd" class="rounded"/> Aceito a <a href="#privacidade" class="underline">Política de Privacidade</a> e o contato via WhatsApp *</label>
+        </div>
+
+        <div class="mt-6 flex items-center justify-between">
+          <button type="button" class="px-4 py-2 rounded-lg border" onclick="go(-1)">Voltar</button>
+          <div class="flex gap-2">
+            <button type="button" class="px-4 py-2 rounded-lg border" onclick="go(1)">Continuar</button>
+            <button type="submit" class="px-5 py-2 rounded-lg bg-sky-600 text-white">Enviar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Política de Privacidade (resumo) -->
+  <section id="privacidade" class="py-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-slate-600">
+      <h2 class="text-xl font-bold">Política de Privacidade — Resumo</h2>
+      <p class="mt-2">Seus dados serão usados apenas para contato e envio de propostas relacionadas aos produtos de consórcio. Não compartilhamos informações com terceiros sem seu consentimento. Você pode solicitar a exclusão a qualquer momento.</p>
+    </div>
+  </section>
+
+  <!-- Integração do formulário rápido com WhatsApp (reuso da função submitForm) -->
+  <script>
+    document.getElementById('leadFormQuick').addEventListener('submit', function(e){
+      e.preventDefault();
+      const fd = new FormData(this);
+      const data = Object.fromEntries(fd.entries());
+      if(!data.nome || !data.telefone || !data.objetivo || !data.parcela){ alert('Preencha todos os campos.'); return; }
+      const msg = `Olá! Quero uma simulação de consórcio.\n\n`+
+        `Nome: ${data.nome}\n`+
+        `Telefone: ${data.telefone}\n`+
+        `Objetivo: ${data.objetivo}\n`+
+        `Parcela desejada: R$ ${data.parcela}\n`+
+        `Origem: Site ${COMPANY_NAME}`;
+      const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeWhatsMessage(msg)}`;
+      window.location.href = url;
+    });
+  </script>
+</body>
+</html>
